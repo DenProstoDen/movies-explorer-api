@@ -35,12 +35,11 @@ module.exports.postCreatMovieValidate = celebrate({
     thumbnail: Joi.string().required().pattern(urlReg),
     movieId: Joi.number().integer().required(),
     nameRU: Joi.string().required(),
-    nameEN: Joi.string().required()
+    nameEN: Joi.string().required(),
   }),
 });
-
 module.exports.fetchMovieValidate = celebrate({
   params: Joi.object().keys({
-  movieId: Joi.string().hex().length(24).required(),
+    movieId: Joi.string().hex().length(24).required(),
   }),
 });

@@ -4,9 +4,8 @@ const routerUser = require('./users');
 const { signupUser, signinUser } = require('../controllers/users');
 const sign = require('../middlewares/sign');
 const routerMovie = require('./movies');
-const NotFoundError = require('../errors/404_NotFoundError');
+const NotFoundError = require('../errors/NotFoundError');
 const { signInUpValid } = require('../utils/validation');
-const { MESSAGE_NOTFOUNDERROR } = require('../utils/constans');
 
 // POST /signup/signin
 router.post('/signup', signInUpValid, signupUser);
@@ -19,7 +18,7 @@ router.use('/users', routerUser);
 router.use('/movies', routerMovie);
 
 router.use((req, res, next) => {
-  next(new NotFoundError(MESSAGE_NOTFOUNDERROR));
+  next(new NotFoundError(404));
 });
 
 module.exports = router;
