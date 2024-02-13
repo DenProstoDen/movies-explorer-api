@@ -58,7 +58,7 @@ module.exports.deleteMovie = (req, res, next) => {
         return next(new ForbiddenError('Другой пользователь, нельзя удалить'));
       }
       return Movie.findByIdAndDelete(movieId)
-        .then(() => { res.status(201).send({ message: 'Успешно'}); });
+        .then(() => { res.status(201).send({ message: 'Успешно' }); });
     })
     .catch(next);
 };
