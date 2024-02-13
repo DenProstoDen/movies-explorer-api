@@ -15,16 +15,16 @@ module.exports.signupUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.status(200).send({
+    .then((user) => res.status(201).send({
       name: user.name,
       _id: user._id,
       email: user.email,
     }))
     .catch((err) => {
-      if (err.code === ERROR_CODENUMBER) {
-        next(new ConflictError(MESSAGE_CONFLICTERROR));
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже существует'));
       } else if (err instanceof mongoose.Error.ValidationError) {
-        next(new BadRequest(MESSAGE_BADREQUESTERROR));
+        next(new BadRequest('Данные введены некорректно'));
       } else {
         next(err);
       }
@@ -47,7 +47,7 @@ module.exports.signinUser = (req, res, next) => {
 
 module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user._id)
-    .then((user) => res.status(STATUS_OK).send(user))
+    .then((user) => res.status(201).send(user))
     .catch(next);
 };
 
@@ -56,16 +56,16 @@ module.exports.updateUserProfile = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        next(new NotFoundError(MESSAGE_NOTFOUNDERROR));
+        next(new NotFoundError('Не найден'));
         return;
       }
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        next(new BadRequest(MESSAGE_BADREQUESTERROR));
-      } else if (err.code === ERROR_CODENUMBER) {
-        next(new ConflictError(MESSAGE_CONFLICTERROR));
+        next(new BadRequest('Данные введены некорректно'));
+      } else if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже существует'));
       } else { next(err); }
     });
 };

@@ -39,10 +39,10 @@ module.exports.postMovie = (req, res, next) => {
     nameEN,
     owner: req.user._id,
   })
-    .then((movie) => res.status(200).send(movie))
+    .then((movie) => res.status(201).send(movie))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        next(new BadRequest(MESSAGE_BADREQUESTERROR));
+        next(new BadRequest('Данные введены некорректно'));
       } else { next(err); }
     });
 };
@@ -52,13 +52,13 @@ module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(movieId)
     .then((movie) => {
       if (!movie) {
-        return next(new NotFoundError(MESSAGE_NOTFOUNDERROR));
+        return next(new NotFoundError(404));
       }
       if (movie.owner.toString() !== req.user._id) {
-        return next(new ForbiddenError(MESSAGE_FORBIDDENERROR));
+        return next(new ForbiddenError('Другой пользователь, нельзя удалить'));
       }
       return Movie.findByIdAndDelete(movieId)
-        .then(() => { res.status(200).send({ message: MESSAGE_STATUSOK }); });
+        .then(() => { res.status(201).send({ message: 'Успешно'}); });
     })
     .catch(next);
 };
